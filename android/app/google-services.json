@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "85319279389",
+    "project_id": "student-ecom",
+    "storage_bucket": "student-ecom.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:85319279389:android:3ce89103a1c28833b337f4",
+        "android_client_info": {
+          "package_name": "com.example.studecom"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "85319279389-l07ifj021e3lmn91b1sgqk4egqfipukp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXRhN3CEn2LLO_-9bQjOTcjzACL0tOpIk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "85319279389-l07ifj021e3lmn91b1sgqk4egqfipukp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
