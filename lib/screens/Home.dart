@@ -9,6 +9,7 @@ class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomeState createState() => _HomeState();
 }
 
@@ -27,8 +28,8 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: CurvedNavigationBar(
         animationCurve: Curves.linear,
         height: 50,
-        color: Colors.indigo,
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+        color:const Color.fromARGB(255, 55, 163, 167),
+        backgroundColor:const Color.fromARGB(255, 255, 255, 255),
         items: const <Widget>[
           Icon(
             Icons.home,
@@ -61,7 +62,7 @@ class _HomeState extends State<Home> {
         children: List.generate(
             bottomBarPages.length, (index) => bottomBarPages[index]),
       ),
-      backgroundColor: const Color.fromARGB(255, 114, 116, 119),
+      backgroundColor: const Color.fromARGB(255, 190, 190, 190),
     );
   }
 }

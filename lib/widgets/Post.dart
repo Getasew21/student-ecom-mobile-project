@@ -21,8 +21,9 @@ class Post extends StatelessWidget {
               alignment: Alignment.center,
               child: Image.network(
                 imageUrl,
+                width: 200,
                 height: 160,
-                fit: BoxFit.contain,
+                fit: BoxFit.cover,
                 loadingBuilder: (BuildContext context, Widget child,
                     ImageChunkEvent? loadingProgress) {
                   if (loadingProgress == null) return child;
@@ -53,7 +54,7 @@ class Post extends StatelessWidget {
                   ),
                   Container(height: 10),
                   Text(
-                    price,
+                    "\$" + price,
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.grey[700],

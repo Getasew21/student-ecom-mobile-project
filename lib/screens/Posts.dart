@@ -15,6 +15,7 @@ class _PostsState extends State<Posts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 190, 190, 190),
       body: StreamBuilder(
           stream: FirebaseFirestore.instance.collection("posts").snapshots(),
           builder: (BuildContext context, AsyncSnapshot postSnapshot) {
@@ -24,17 +25,22 @@ class _PostsState extends State<Posts> {
             final postDoc = postSnapshot.data!.docs;
 
             return GridView.count(
-              // Create a grid with 2 columns. If you change the scrollDirection to
-              // horizontal, this produces 2 rows.
               crossAxisCount: 2,
-              // Generate 100 widgets that display their index in the List.
+              childAspectRatio: 0.6,
               children: List.generate(postDoc.length, (index) {
                 return Center(
-                  child: Post(
-                    postDoc[index]['image_url'],
-                    postDoc[index]['title'],
-                    postDoc[index]['price'],
-                    postDoc[index]['email'],
+                  child: InkWell(
+                    onTap: () {
+                      print(index);
+                    },
+                    child: Material(
+                      child: Post(
+                        postDoc[index]['image_url'],
+                        postDoc[index]['title'],
+                        postDoc[index]['price'],
+                        postDoc[index]['email'],
+                      ),
+                    ),
                   ),
                 );
               }),

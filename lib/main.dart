@@ -1,7 +1,5 @@
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:studecom/screens/Home.dart';
@@ -21,7 +19,7 @@ void main() async {
   );
   await FirebaseMessaging.instance.setAutoInitEnabled(true);
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-  NotificationSettings settings = await messaging.requestPermission(
+  await messaging.requestPermission(
     alert: true,
     announcement: false,
     badge: true,
@@ -31,7 +29,7 @@ void main() async {
     sound: true,
   );
   FirebaseMessaging.onBackgroundMessage(_firrebaseMessagingBackgroundHandler);
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true,
     badge: true,
     sound: true,
@@ -55,7 +53,6 @@ class _MyAppState extends State<MyApp> {
       LocalNotificationService.showNotificationOnForeground(message);
     });
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-
       LocalNotificationService.showNotificationOnForeground(message);
     });
   }
@@ -71,9 +68,9 @@ class _MyAppState extends State<MyApp> {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return Home();
+            return const Home();
           }
-          return SignUp();
+          return const SignUp();
         },
       ),
     );
