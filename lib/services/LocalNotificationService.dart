@@ -6,22 +6,20 @@ class LocalNotificationService {
       FlutterLocalNotificationsPlugin();
 
   static void initilize() {
-    final InitializationSettings initializationSettings =
-        InitializationSettings(
+    InitializationSettings initializationSettings =
+        const InitializationSettings(
             android: AndroidInitializationSettings("@mipmap/ic_launcher"));
 
     _notificationsPlugin.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: (details) {
-        print(details);
-      },
+      onDidReceiveNotificationResponse: (details) {},
     );
   }
 
   static Future<void> showNotificationOnForeground(
       RemoteMessage message) async {
     try {
-      final notificationDetail = NotificationDetails(
+      var notificationDetail = const NotificationDetails(
           android: AndroidNotificationDetails(
               "firebase_push_notification", "firebase_push_notification",
               importance: Importance.max, priority: Priority.high));

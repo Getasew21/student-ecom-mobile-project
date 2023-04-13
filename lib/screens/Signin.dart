@@ -29,10 +29,7 @@ class _SigninState extends State<Signin> {
         _formKey.currentState?.save();
         await _auth.signInWithEmailAndPassword(
             email: _userEmail, password: _userPassword);
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => Home())); //user authentication
+        Navigator.pushNamed(context, "/home"); //user authentication
       }
     } on Exception catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

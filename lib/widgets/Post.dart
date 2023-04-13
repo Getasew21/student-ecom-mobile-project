@@ -1,18 +1,23 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:studecom/screens/PostDetail.dart';
+import 'package:studecom/screens/Profile.dart';
 
 class Post extends StatelessWidget {
-  Post(this.imageUrl, this.title, this.price, this.email);
-  String imageUrl = "", title = "", price = "", email = "";
+  Post(this.imageUrl, this.title, this.price, this.email, this.postdocid,
+      {super.key});
+  String imageUrl = "", title = "", price = "", email = "", postdocid = '';
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Ink(
       child: Card(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+            side: BorderSide(color: Theme.of(context).primaryColor, width: 3),
+            borderRadius: BorderRadius.all(Radius.circular(15))),
+        shadowColor: Colors.green[100],
+        elevation: 50,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -21,8 +26,8 @@ class Post extends StatelessWidget {
               alignment: Alignment.center,
               child: Image.network(
                 imageUrl,
-                width: 200,
-                height: 160,
+                width: double.infinity,
+                height: 180,
                 fit: BoxFit.cover,
                 loadingBuilder: (BuildContext context, Widget child,
                     ImageChunkEvent? loadingProgress) {
@@ -54,7 +59,7 @@ class Post extends StatelessWidget {
                   ),
                   Container(height: 10),
                   Text(
-                    "\$" + price,
+                    "\$$price",
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.grey[700],
@@ -67,9 +72,10 @@ class Post extends StatelessWidget {
                         style: TextButton.styleFrom(
                           foregroundColor: Colors.transparent,
                         ),
-                        child: const Text(
+                        child: Text(
                           "SHARE",
-                          style: TextStyle(color: Colors.amber),
+                          style:
+                              TextStyle(color: Theme.of(context).primaryColor),
                         ),
                         onPressed: () {},
                       ),
@@ -77,18 +83,23 @@ class Post extends StatelessWidget {
                         style: TextButton.styleFrom(
                           foregroundColor: Colors.transparent,
                         ),
-                        child: const Text(
+                        child: Text(
                           "EXPLORE",
-                          style: TextStyle(color: Colors.amber),
+                          style:
+                              TextStyle(color: Theme.of(context).primaryColor),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return PostDetail(postdocid);
+                          }));
+                        },
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-            Container(height: 5),
           ],
         ),
       ),

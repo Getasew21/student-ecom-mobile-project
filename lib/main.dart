@@ -3,7 +3,11 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:studecom/screens/Home.dart';
+import 'package:studecom/screens/PostDetail.dart';
+import 'package:studecom/screens/Posts.dart';
+import 'package:studecom/screens/Profile.dart';
 import 'package:studecom/screens/SignUp.dart';
+import 'package:studecom/screens/Signin.dart';
 import 'package:studecom/services/LocalNotificationService.dart';
 import 'firebase_options.dart';
 
@@ -60,10 +64,25 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: Color.fromARGB(223, 94, 16, 146),
+        fontFamily: 'Georgia',
+
+        // Define the default `TextTheme`. Use this to specify the default
+        // text styling for headlines, titles, bodies of text, and more.
+        textTheme: const TextTheme(
+          displayLarge: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
+          titleLarge: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+          bodyMedium: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
+        ),
       ),
+      routes: {
+        '/signup': (context) => const SignUp(),
+        '/signin': (context) => const Signin(),
+        '/posts': (context) => const Posts(),
+        '/home': (context) => const Home(),
+        '/profile': (context) => const Profile(),
+      },
       home: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {

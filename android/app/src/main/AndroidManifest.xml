@@ -50,6 +50,7 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="firebase_push_notification"
              />
+             
         
     </application>
 </manifest>

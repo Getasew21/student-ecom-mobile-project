@@ -10,20 +10,26 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  String user = FirebaseAuth.instance.currentUser.toString();
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      const SizedBox(
-        height: 50,
+    return Scaffold(
+      body: Center(
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 100,
+            ),
+            Text(user),
+            ElevatedButton(
+                onPressed: () {
+                  FirebaseAuth.instance.signOut();
+                  Navigator.pushNamed(context, "signup");
+                },
+                child: Text("signout")),
+          ],
+        ),
       ),
-      const Text("profile"),
-      ElevatedButton(
-          onPressed: () {
-            FirebaseAuth.instance.signOut();
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => Signin()));
-          },
-          child: const Text("Sign out"))
-    ]);
+    );
   }
 }

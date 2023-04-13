@@ -1,6 +1,6 @@
+import "package:flutter/material.dart";
 import "package:curved_navigation_bar/curved_navigation_bar.dart";
 import "package:firebase_auth/firebase_auth.dart";
-import "package:flutter/material.dart";
 import "package:studecom/screens/PostCreate.dart";
 import "package:studecom/screens/Posts.dart";
 import "package:studecom/screens/Profile.dart";
@@ -25,26 +25,26 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       bottomNavigationBar: CurvedNavigationBar(
         animationCurve: Curves.linear,
         height: 50,
-        color:const Color.fromARGB(255, 55, 163, 167),
-        backgroundColor:const Color.fromARGB(255, 255, 255, 255),
-        items: const <Widget>[
+        backgroundColor: Theme.of(context).primaryColor,
+        items: <Widget>[
           Icon(
             Icons.home,
             size: 30,
-            color: Colors.white,
+            color: Theme.of(context).primaryColor,
           ),
           Icon(
             Icons.add,
             size: 30,
-            color: Colors.white,
+            color: Theme.of(context).primaryColor,
           ),
           Icon(
             Icons.manage_accounts,
             size: 30,
-            color: Colors.white,
+            color: Theme.of(context).primaryColor,
           ),
         ],
         onTap: (index) {

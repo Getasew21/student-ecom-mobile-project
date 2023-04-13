@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:studecom/widgets/Post.dart';
@@ -15,7 +13,6 @@ class _PostsState extends State<Posts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 190, 190, 190),
       body: StreamBuilder(
           stream: FirebaseFirestore.instance.collection("posts").snapshots(),
           builder: (BuildContext context, AsyncSnapshot postSnapshot) {
@@ -24,27 +21,27 @@ class _PostsState extends State<Posts> {
             }
             final postDoc = postSnapshot.data!.docs;
 
-            return GridView.count(
-              crossAxisCount: 2,
-              childAspectRatio: 0.6,
-              children: List.generate(postDoc.length, (index) {
-                return Center(
-                  child: InkWell(
-                    onTap: () {
-                      print(index);
-                    },
-                    child: Material(
-                      child: Post(
-                        postDoc[index]['image_url'],
-                        postDoc[index]['title'],
-                        postDoc[index]['price'],
-                        postDoc[index]['email'],
+            return ListView.builder(
+                itemCount: postDoc.length,
+                itemBuilder: (context, index) {
+                  return Center(
+                    child: GestureDetector(
+                      onTap: () {
+                        print(postDoc[index]['title']);
+                      },
+                      child: Material(
+                        child: Column(children: [
+                          Post(
+                              postDoc[index]['image_url'],
+                              postDoc[index]['title'],
+                              postDoc[index]['price'],
+                              postDoc[index]['email'],
+                              postDoc[index].id),
+                        ]),
                       ),
                     ),
-                  ),
-                );
-              }),
-            );
+                  );
+                });
           }),
     );
   }
