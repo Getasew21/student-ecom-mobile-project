@@ -19,39 +19,39 @@ class _HomeState extends State<Home> {
   final List<Widget> bottomBarPages = [
     const Posts(),
     const PostCreate(),
-    const Profile(),
+    Profile(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
       bottomNavigationBar: CurvedNavigationBar(
         animationCurve: Curves.linear,
         height: 50,
-        backgroundColor: Theme.of(context).primaryColor,
-        items: <Widget>[
+        backgroundColor: Color.fromARGB(0, 255, 255, 255),
+        color: Theme.of(context).primaryColor,
+        items: const <Widget>[
           Icon(
             Icons.home,
             size: 30,
-            color: Theme.of(context).primaryColor,
+            color: Colors.white,
           ),
           Icon(
             Icons.add,
             size: 30,
-            color: Theme.of(context).primaryColor,
+            color: Colors.white,
           ),
           Icon(
             Icons.manage_accounts,
             size: 30,
-            color: Theme.of(context).primaryColor,
+            color: Colors.white,
           ),
         ],
         onTap: (index) {
           _pageController.animateToPage(
             index,
             duration: const Duration(milliseconds: 500),
-            curve: Curves.easeIn,
+            curve: Curves.bounceInOut,
           );
           //Handle button tap
         },

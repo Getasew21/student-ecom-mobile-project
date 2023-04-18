@@ -13,6 +13,10 @@ class _PostsState extends State<Posts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("posts"),
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
       body: StreamBuilder(
           stream: FirebaseFirestore.instance.collection("posts").snapshots(),
           builder: (BuildContext context, AsyncSnapshot postSnapshot) {

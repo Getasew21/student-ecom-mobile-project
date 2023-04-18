@@ -65,23 +65,14 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primaryColor: Color.fromARGB(223, 94, 16, 146),
-        fontFamily: 'Georgia',
-
-        // Define the default `TextTheme`. Use this to specify the default
-        // text styling for headlines, titles, bodies of text, and more.
-        textTheme: const TextTheme(
-          displayLarge: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
-          titleLarge: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
-          bodyMedium: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
-        ),
+        primaryColor: Color.fromARGB(255, 1, 108, 112),
       ),
       routes: {
         '/signup': (context) => const SignUp(),
         '/signin': (context) => const Signin(),
         '/posts': (context) => const Posts(),
         '/home': (context) => const Home(),
-        '/profile': (context) => const Profile(),
+        '/profile': (context) => Profile(),
       },
       home: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),

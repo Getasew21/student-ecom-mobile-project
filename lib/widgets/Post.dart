@@ -12,12 +12,12 @@ class Post extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Ink(
+      width: MediaQuery.of(context).size.width * 0.8,
       child: Card(
+        elevation: 10,
         shape: RoundedRectangleBorder(
-            side: BorderSide(color: Theme.of(context).primaryColor, width: 3),
-            borderRadius: BorderRadius.all(Radius.circular(15))),
-        shadowColor: Colors.green[100],
-        elevation: 50,
+          borderRadius: BorderRadius.circular(8),
+        ),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
