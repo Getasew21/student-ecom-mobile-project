@@ -91,7 +91,7 @@ class Post extends StatelessWidget {
                         onPressed: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
-                            return PostDetail(postdocid);
+                            return PostDetail(postdocid, false);
                           }));
                         },
                       ),

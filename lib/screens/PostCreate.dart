@@ -144,7 +144,7 @@ class _PostCreateState extends State<PostCreate> {
                               ),
                               Align(
                                 alignment: Alignment.topRight,
-                                child: ElevatedButton(
+                                child: TextButton(
                                   onPressed: () {
                                     setState(() {
                                       image = null;

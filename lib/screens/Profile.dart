@@ -16,93 +16,118 @@ class Profile extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
+        title: const Text("Profile"),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection("posts")
-              .where("email", isEqualTo: userEmail ?? "")
-              .snapshots(),
-          builder: (context, snapshot) {
-            final postDoc = snapshot.hasData ? snapshot.data!.docs : [];
-            if (!snapshot.hasData) {
-              return CircularProgressIndicator();
-            } else {
-              return Container(
-                  margin: const EdgeInsets.all(10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Column(
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: Theme.of(context).primaryColor,
-                                radius: 40,
-                                child: Icon(Icons.manage_accounts, size: 60),
-                              ),
-                              Text("${postDoc.length}")
-                            ],
-                          ),
-                          Column(
-                            children: const [
-                              Text("5"),
-                              Text("posts"),
-                            ],
-                          ),
-                          Column(
-                            children: [Text("data")],
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.65,
-                          child: GridView.count(
-                            mainAxisSpacing: 5,
-                            crossAxisSpacing: 5,
-                            crossAxisCount: 4,
-                            children: List.generate(postDoc.length, (index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) {
-                                    return PostDetail(postDoc[index].id);
-                                  }));
-                                },
-                                child: Image.network(
-                                  postDoc[index]["image_url"],
-                                  width: double.infinity,
-                                  height: 100,
-                                  fit: BoxFit.cover,
-                                  loadingBuilder: (BuildContext context,
-                                      Widget child,
-                                      ImageChunkEvent? loadingProgress) {
-                                    if (loadingProgress == null) return child;
-                                    return Container(
-                                      alignment: Alignment.center,
-                                      margin: const EdgeInsets.only(top: 30),
-                                      child: CircularProgressIndicator(
-                                        value: loadingProgress
-                                                    .expectedTotalBytes !=
-                                                null
-                                            ? loadingProgress
-                                                    .cumulativeBytesLoaded /
-                                                loadingProgress
-                                                    .expectedTotalBytes!
-                                            : null,
-                                      ),
-                                    );
-                                  },
+      body: SingleChildScrollView(
+        child: StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection("posts")
+                .where("email", isEqualTo: userEmail ?? "")
+                .snapshots(),
+            builder: (context, snapshot) {
+              final postDoc = snapshot.hasData ? snapshot.data!.docs : [];
+              if (!snapshot.hasData) {
+                return const CircularProgressIndicator();
+              } else {
+                return Container(
+                    margin: const EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Column(
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor:
+                                      Theme.of(context).primaryColor,
+                                  radius: 40,
+                                  child: const Icon(
+                                    Icons.manage_accounts,
+                                    size: 60,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              );
-                            }),
-                          ))
-                    ],
-                  ));
-            }
-          }),
+                                Text(
+                                  user!.email.toString(),
+                                  style: const TextStyle(fontSize: 20),
+                                )
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Text(
+                                  '${postDoc.length}',
+                                  style: const TextStyle(fontSize: 30),
+                                ),
+                                const Text(
+                                  "Posts",
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Card(
+                          color: Color.fromARGB(209, 1, 108, 112),
+                          child: GestureDetector(
+                            child: const ListTile(
+                              title: Text(
+                                'User Admin',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 25),
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.pushNamed(context, '/admin');
+                            },
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        const Text("YOUR POSTS"),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.65,
+                            child: GridView.count(
+                              mainAxisSpacing: 5,
+                              crossAxisSpacing: 5,
+                              crossAxisCount: 3,
+                              children: List.generate(postDoc.length, (index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return PostDetail(
+                                          postDoc[index].id, true);
+                                    }));
+                                  },
+                                  child: Image.network(
+                                    postDoc[index]["image_url"],
+                                    width: double.infinity,
+                                    height: 100,
+                                    fit: BoxFit.cover,
+                                    loadingBuilder: (BuildContext context,
+                                        Widget child,
+                                        ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Container(
+                                        alignment: Alignment.center,
+                                        margin: const EdgeInsets.only(top: 30),
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    },
+                                  ),
+                                );
+                              }),
+                            ))
+                      ],
+                    ));
+              }
+            }),
+      ),
     );
   }
 

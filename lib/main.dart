@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:studecom/screens/AdminDashboard.dart';
 import 'package:studecom/screens/Home.dart';
 import 'package:studecom/screens/PostDetail.dart';
 import 'package:studecom/screens/Posts.dart';
@@ -65,20 +66,21 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primaryColor: Color.fromARGB(255, 1, 108, 112),
+        primaryColor: const Color.fromARGB(255, 1, 108, 112),
       ),
       routes: {
         '/signup': (context) => const SignUp(),
         '/signin': (context) => const Signin(),
         '/posts': (context) => const Posts(),
-        '/home': (context) => const Home(),
+        '/home': (context) => Home(),
         '/profile': (context) => Profile(),
+        '/admin': (context) => const AdminDashboard(),
       },
       home: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return const Home();
+            return Home();
           }
           return const SignUp();
         },

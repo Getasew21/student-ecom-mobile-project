@@ -35,12 +35,14 @@ class _PostsState extends State<Posts> {
                       },
                       child: Material(
                         child: Column(children: [
-                          Post(
-                              postDoc[index]['image_url'],
-                              postDoc[index]['title'],
-                              postDoc[index]['price'],
-                              postDoc[index]['email'],
-                              postDoc[index].id),
+                          postDoc.length != 0
+                              ? Post(
+                                  postDoc[index]['image_url'],
+                                  postDoc[index]['title'],
+                                  postDoc[index]['price'],
+                                  postDoc[index]['email'],
+                                  postDoc[index].id)
+                              : Text(" no pot yet data")
                         ]),
                       ),
                     ),
