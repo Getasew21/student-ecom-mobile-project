@@ -45,7 +45,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           stream: FirebaseFirestore.instance.collection('users').snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
+              return const Center(child: CircularProgressIndicator());
             }
             final userDoc = snapshot.data!.docs;
 

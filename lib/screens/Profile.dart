@@ -3,20 +3,79 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:studecom/screens/PostDetail.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
   Profile({Key? key}) : super(key: key);
 
+  @override
+  State<Profile> createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
   var user = FirebaseAuth.instance.currentUser;
   var userEmail = FirebaseAuth.instance.currentUser?.email.toString();
-
   final postRef = FirebaseFirestore.instance.collection("posts");
+
+  var isAdmin = false;
+
+  void checkUserStatus() async {
+    final checkadmin = await FirebaseFirestore.instance
+        .collection("users")
+        .where("isadmin", isEqualTo: true)
+        .where("email", isEqualTo: FirebaseAuth.instance.currentUser!.email)
+        .get();
+
+    setState(() {
+      isAdmin = checkadmin.docs.isNotEmpty;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    checkUserStatus();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         title: const Text("Profile"),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+              ),
+              child: Column(
+                children: [
+                  const CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Colors.white,
+                    child: Icon(
+                      Icons.manage_accounts,
+                      size: 50,
+                      color: Colors.black45,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    "${userEmail}",
+                    style: const TextStyle(color: Colors.white, fontSize: 15),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              title: const Text(''),
+              onTap: () {},
+            ),
+            ListTile(
+              title: const Text('Sign out'),
+              onTap: () {},
+            ),
+          ],
+        ),
       ),
       body: SingleChildScrollView(
         child: StreamBuilder<QuerySnapshot>(
@@ -38,6 +97,7 @@ class Profile extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
+                            //circular avator
                             Column(
                               children: [
                                 CircleAvatar(
@@ -56,6 +116,7 @@ class Profile extends StatelessWidget {
                                 )
                               ],
                             ),
+
                             Column(
                               children: [
                                 Text(
@@ -70,21 +131,23 @@ class Profile extends StatelessWidget {
                             ),
                           ],
                         ),
-                        Card(
-                          color: Color.fromARGB(209, 1, 108, 112),
-                          child: GestureDetector(
-                            child: const ListTile(
-                              title: Text(
-                                'User Admin',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 25),
+                        //user admin card
+                        if (isAdmin)
+                          Card(
+                            color: Color.fromARGB(209, 1, 108, 112),
+                            child: GestureDetector(
+                              child: const ListTile(
+                                title: Text(
+                                  'User Admin',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 25),
+                                ),
                               ),
+                              onTap: () {
+                                Navigator.pushNamed(context, '/admin');
+                              },
                             ),
-                            onTap: () {
-                              Navigator.pushNamed(context, '/admin');
-                            },
                           ),
-                        ),
                         const SizedBox(
                           height: 20,
                         ),
