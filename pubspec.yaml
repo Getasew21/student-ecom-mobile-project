@@ -50,17 +50,28 @@ dependencies:
   easy_image_viewer: ^1.2.0
   bouncy_widget: ^2.0.1
   google_nav_bar: ^5.0.6
-
+  empty_widget: ^0.0.3
+  flutter_spinkit: ^5.2.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.2.19
+  flutter_lints: ^2.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "lib/images/Wollo-University-logo.png"
+flutter_native_splash:
+  image: "lib/images/Wollo-University-logo.png"
+  color: "#42a5f5"
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

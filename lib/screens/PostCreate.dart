@@ -1,11 +1,11 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:bouncy_widget/bouncy_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -33,7 +33,7 @@ class _PostCreateState extends State<PostCreate> {
   var phoneNumber = "";
   File? image;
   bool isPost = true;
-  bool isPermit = false;
+  bool isPermit = true;
   var db = FirebaseFirestore.instance;
   int postNumber = 0;
   // functions
@@ -221,7 +221,7 @@ class _PostCreateState extends State<PostCreate> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            postNumber > 1 || true
+            postNumber < 1 || isPermit
                 ? Padding(
                     padding: const EdgeInsets.all(16),
                     child: Form(
@@ -245,8 +245,8 @@ class _PostCreateState extends State<PostCreate> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             SizedBox(
-                                                height: 300,
-                                                width: 300,
+                                                height: 200,
+                                                width: 260,
                                                 child: Image.file(
                                                   image!,
                                                   width: double.infinity,
@@ -256,13 +256,17 @@ class _PostCreateState extends State<PostCreate> {
                                         ),
                                         Align(
                                           alignment: Alignment.topRight,
-                                          child: TextButton(
+                                          child: FloatingActionButton(
+                                            backgroundColor:
+                                                Theme.of(context).primaryColor,
                                             onPressed: () {
                                               setState(() {
                                                 image = null;
                                               });
                                             },
-                                            child: const Icon(Icons.close),
+                                            child: const Icon(
+                                              Icons.close,
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -301,8 +305,9 @@ class _PostCreateState extends State<PostCreate> {
                                 return null;
                               },
                               keyboardType: TextInputType.emailAddress,
+                              textCapitalization: TextCapitalization.sentences,
                               decoration: const InputDecoration(
-                                labelText: "item name",
+                                hintText: "item name",
                                 filled: true,
                                 fillColor:
                                     const Color.fromARGB(99, 1, 108, 112),
@@ -310,7 +315,7 @@ class _PostCreateState extends State<PostCreate> {
                                     borderSide: BorderSide.none),
                                 errorBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                      width: 3, color: Colors.redAccent),
+                                      width: 1, color: Colors.redAccent),
                                 ),
                               ),
                               onSaved: ((newValue) {
@@ -328,7 +333,7 @@ class _PostCreateState extends State<PostCreate> {
                                   enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
                                         color: Color.fromARGB(255, 1, 99, 97),
-                                        width: 2),
+                                        width: 1),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
@@ -356,12 +361,12 @@ class _PostCreateState extends State<PostCreate> {
                               key: const ValueKey("price"),
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return 'please enter price';
+                                  return 'please valid price';
                                 }
                                 return null;
                               },
                               decoration: const InputDecoration(
-                                labelText: "price",
+                                hintText: "price",
                                 filled: true,
                                 fillColor:
                                     const Color.fromARGB(99, 1, 108, 112),
@@ -369,7 +374,7 @@ class _PostCreateState extends State<PostCreate> {
                                     borderSide: BorderSide.none),
                                 errorBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                      width: 3, color: Colors.redAccent),
+                                      width: 1, color: Colors.redAccent),
                                 ),
                               ),
                               onSaved: ((newValue) {
@@ -386,18 +391,20 @@ class _PostCreateState extends State<PostCreate> {
                                 if (value!.isEmpty) {
                                   return 'please enter a description';
                                 }
+                                if (value.length < 10) {
+                                  return 'at least 10 character';
+                                }
                                 return null;
                               },
                               decoration: const InputDecoration(
-                                labelText: "description",
+                                hintText: "description",
                                 filled: true,
-                                fillColor:
-                                    const Color.fromARGB(99, 1, 108, 112),
+                                fillColor: Color.fromARGB(99, 1, 108, 112),
                                 border: OutlineInputBorder(
                                     borderSide: BorderSide.none),
                                 errorBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                      width: 3, color: Colors.redAccent),
+                                      width: 1, color: Colors.redAccent),
                                 ),
                               ),
                               onSaved: ((newValue) {
@@ -409,23 +416,25 @@ class _PostCreateState extends State<PostCreate> {
                             ),
                             //tlegram address ********************************************
                             TextFormField(
-                              key: const ValueKey("telegram address"),
+                              key: const ValueKey("@telegrame username"),
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'please enter a tlegram address';
                                 }
+                                if (!value.startsWith("@")) {
+                                  return "telegram address start with @ ";
+                                }
                                 return null;
                               },
                               decoration: const InputDecoration(
-                                labelText: "telegram address",
+                                hintText: "@telegram username",
                                 filled: true,
-                                fillColor:
-                                    const Color.fromARGB(99, 1, 108, 112),
+                                fillColor: Color.fromARGB(99, 1, 108, 112),
                                 border: OutlineInputBorder(
                                     borderSide: BorderSide.none),
                                 errorBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                      width: 3, color: Colors.redAccent),
+                                      width: 1, color: Colors.redAccent),
                                 ),
                               ),
                               onSaved: ((newValue) {
@@ -438,21 +447,24 @@ class _PostCreateState extends State<PostCreate> {
                             //phone ********************************************
                             TextFormField(
                               key: const ValueKey("phone"),
+                              keyboardType: TextInputType.number,
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'please enter a phone number';
                                 }
-                                return null;
                               },
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               decoration: const InputDecoration(
-                                labelText: "phone",
+                                hintText: "phone",
                                 filled: true,
                                 fillColor: Color.fromARGB(99, 1, 108, 112),
                                 border: OutlineInputBorder(
                                     borderSide: BorderSide.none),
                                 errorBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                      width: 3, color: Colors.redAccent),
+                                      width: 1, color: Colors.redAccent),
                                 ),
                               ),
                               onSaved: ((newValue) {

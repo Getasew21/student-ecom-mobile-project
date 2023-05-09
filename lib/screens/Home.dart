@@ -48,10 +48,10 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: GNav(
           backgroundColor: Theme.of(context).primaryColor,
           color: Colors.white,
-          activeColor: Colors.white,
-          tabBackgroundColor: Colors.grey.shade500,
+          activeColor: Color.fromARGB(209, 6, 51, 87),
+          tabBackgroundColor: Color.fromARGB(255, 10, 145, 155),
           gap: 10,
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(15),
           onTabChange: (index) {
             _pageController.animateToPage(
               index,

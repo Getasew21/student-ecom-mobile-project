@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:studecom/widgets/Post.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Posts extends StatefulWidget {
   const Posts({Key? key}) : super(key: key);
@@ -27,6 +28,7 @@ class _PostsState extends State<Posts> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
+            // drawer header
             DrawerHeader(
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
@@ -52,13 +54,41 @@ class _PostsState extends State<Posts> {
                 ],
               ),
             ),
+
+            //drawer list items
+
             ListTile(
-              title: const Text('Item 1'),
-              onTap: () {},
+              leading: const Icon(Icons.contact_emergency),
+              title: const Text("Contact Us"),
+              onTap: () {
+                final Uri emailLaunchUri = Uri(
+                  scheme: 'mailto',
+                  path: 'getasewadane9@gmail.com',
+                );
+
+                launchUrl(emailLaunchUri);
+              },
             ),
             ListTile(
-              title: const Text('Item 2'),
-              onTap: () {},
+              leading: const Icon(Icons.feedback),
+              title: const Text("Feedback"),
+              onTap: () {
+                final Uri emailLaunchUri = Uri(
+                  scheme: 'mailto',
+                  path: 'getasewadane9@gmail.com',
+                );
+
+                launchUrl(emailLaunchUri);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.close),
+              title: const Text('Sign out'),
+              onTap: () async {
+                await FirebaseAuth.instance.signOut();
+                Navigator.pushNamedAndRemoveUntil(
+                    context, "/signin", (route) => false);
+              },
             ),
           ],
         ),

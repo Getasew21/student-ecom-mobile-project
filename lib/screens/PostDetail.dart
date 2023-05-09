@@ -3,6 +3,7 @@ import 'dart:async';
 import "package:flutter/material.dart";
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../widgets/cardDescription.dart';
 
 class PostDetail extends StatelessWidget {
@@ -48,6 +49,7 @@ class PostDetail extends StatelessWidget {
         .snapshots();
     return Scaffold(
         appBar: AppBar(
+          title: const Text("Details"),
           backgroundColor: Theme.of(context).primaryColor,
         ),
         body: StreamBuilder(
@@ -89,45 +91,92 @@ class PostDetail extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(width: 1, color: Colors.black)),
-                      margin: const EdgeInsets.all(10),
-                      alignment: Alignment.topLeft,
-                      child: Column(
-                        children: [
-                          Text(
-                            post['title'],
-                            style:
-                                TextStyle(fontSize: 20, fontFamily: 'Raleway'),
-                          ),
-                          Text(post['description']),
-                        ],
+                    Card(
+                      elevation: 5,
+                      child: Container(
+                        margin: const EdgeInsets.all(10),
+                        alignment: Alignment.topLeft,
+                        child: Column(
+                          children: [
+                            Text(
+                              post['title'],
+                              style: const TextStyle(
+                                  fontSize: 25, fontFamily: 'Raleway'),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              post['description'],
+                              style: TextStyle(
+                                  fontSize: 15, color: Colors.grey[600]),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Container(
-                      child: Text("contact"),
+                      height: 20,
+                      child: const Text(
+                        "Contact me",
+                        style: TextStyle(fontSize: 20),
+                      ),
                     ),
                     //email adress
-                    Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(width: 1, color: Colors.black)),
-                      margin: const EdgeInsets.all(10),
-                      child: Column(children: [
-                        InkWell(
-                          onTap: () {},
-                          child: CardDescription(post["email"], Icons.email),
-                        ),
-                        InkWell(
-                          onTap: () {},
-                          child: CardDescription(post["phone"], Icons.phone),
-                        ),
-                        InkWell(
-                          onTap: () {},
-                          child:
-                              CardDescription(post["telegram"], Icons.telegram),
-                        ),
-                      ]),
+                    Card(
+                      elevation: 5,
+                      child: Container(
+                        margin: const EdgeInsets.all(10),
+                        child: Column(children: [
+                          //email
+                          InkWell(
+                            onTap: () {
+                              final Uri emailLaunchUri = Uri(
+                                scheme: 'mailto',
+                                path: post["email"],
+                              );
+
+                              launchUrl(emailLaunchUri);
+                            },
+                            child: CardDescription(post["email"], Icons.email),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          //phone call
+                          InkWell(
+                            onTap: () async {
+                              final Uri launchUri = Uri(
+                                scheme: 'tel',
+                                path: post["phone"],
+                              );
+                              await launchUrl(launchUri);
+                            },
+                            child: CardDescription(post["phone"], Icons.phone),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          //Telegrame
+                          InkWell(
+                            onTap: () async {
+                              await launch(
+                                "https://t.me/${post["telegram"]}",
+                                forceSafariVC: false,
+                                forceWebView: false,
+                                headers: <String, String>{
+                                  'my_header_key': 'my_header_value'
+                                },
+                              );
+                            },
+                            child: CardDescription(
+                                post["telegram"], Icons.telegram),
+                          ),
+                        ]),
+                      ),
                     ),
                     if (isOwner)
                       Card(

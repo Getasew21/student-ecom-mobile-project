@@ -2,11 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 import 'package:studecom/screens/AdminDashboard.dart';
 import 'package:studecom/screens/Home.dart';
-import 'package:studecom/screens/PostDetail.dart';
+import 'package:studecom/screens/PostCreate.dart';
+
 import 'package:studecom/screens/Posts.dart';
 import 'package:studecom/screens/Profile.dart';
+import 'package:studecom/screens/ResetPassword.dart';
 import 'package:studecom/screens/SignUp.dart';
 import 'package:studecom/screens/Signin.dart';
 import 'package:studecom/services/LocalNotificationService.dart';
@@ -40,6 +43,12 @@ void main() async {
     sound: true,
   );
   LocalNotificationService.initilize();
+
+//sytem navigation bar
+  SystemChrome.setSystemUIChangeCallback((systemOverlaysAreVisible) async {
+    await Future.delayed(const Duration(seconds: 1));
+    SystemChrome.restoreSystemUIOverlays();
+  });
   runApp(const MyApp());
 }
 
@@ -54,6 +63,7 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   void initState() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       LocalNotificationService.showNotificationOnForeground(message);
     });
@@ -75,6 +85,8 @@ class _MyAppState extends State<MyApp> {
         '/home': (context) => Home(),
         '/profile': (context) => Profile(),
         '/admin': (context) => const AdminDashboard(),
+        '/postcreate': (context) => const PostCreate(),
+        '/resetpassword': (context) => const ResetPassword(),
       },
       home: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),

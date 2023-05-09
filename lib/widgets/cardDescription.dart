@@ -7,6 +7,8 @@ class CardDescription extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      decoration: const BoxDecoration(
+          border: Border(bottom: BorderSide(width: 1, color: Colors.black12))),
       margin: const EdgeInsets.only(left: 10, right: 10),
       child: Row(children: [
         Container(

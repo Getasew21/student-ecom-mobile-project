@@ -20,16 +20,25 @@ class _AdminDashboardState extends State<AdminDashboard> {
       builder: (context) {
         return Center(
           child: Container(
+            height: 200,
+            width: 200,
             decoration: const BoxDecoration(
                 color: Color.fromARGB(66, 19, 19, 18),
                 borderRadius: BorderRadius.all(Radius.circular(10))),
-            child: Container(
-              height: 60,
-              width: 60,
-              child: const CircularProgressIndicator(
-                semanticsLabel: "Loadding",
-                strokeWidth: 7,
-                color: Color.fromARGB(255, 24, 135, 102),
+            child: Center(
+              child: Column(
+                children: const [
+                  SizedBox(
+                    height: 80,
+                  ),
+                  SizedBox(
+                    child: CircularProgressIndicator(
+                      semanticsLabel: "Loadding",
+                      strokeWidth: 7,
+                      color: Color.fromARGB(255, 24, 135, 102),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -51,7 +60,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).primaryColor,
-          title: const Text("Admin Dashboard"),
+          title: const Text("User Permission"),
         ),
         body: StreamBuilder(
           stream: FirebaseFirestore.instance.collection('users').snapshots(),

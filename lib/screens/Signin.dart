@@ -32,16 +32,23 @@ class _SigninState extends State<Signin> {
           builder: (context) {
             return Center(
               child: Container(
+                height: 200,
+                width: 200,
                 decoration: const BoxDecoration(
                     color: Color.fromARGB(66, 19, 19, 18),
                     borderRadius: BorderRadius.all(Radius.circular(10))),
-                child: const SizedBox(
-                  height: 60,
-                  width: 60,
-                  child: CircularProgressIndicator(
-                    semanticsLabel: "Loadding",
-                    strokeWidth: 7,
-                    color: Color.fromARGB(255, 24, 135, 102),
+                child: Center(
+                  child: Column(
+                    children: const [
+                      SizedBox(
+                        height: 80,
+                      ),
+                      CircularProgressIndicator(
+                        semanticsLabel: "Loadding",
+                        strokeWidth: 7,
+                        color: Color.fromARGB(255, 24, 135, 102),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -192,9 +199,14 @@ class _SigninState extends State<Signin> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text(
-                            "Forgot Password?",
-                            style: TextStyle(color: Colors.grey[500]),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pushNamed("/resetpassword");
+                            },
+                            child: Text(
+                              "Forgot Password?",
+                              style: TextStyle(color: Colors.grey[500]),
+                            ),
                           ),
                         ],
                       ),
@@ -234,7 +246,7 @@ class _SigninState extends State<Signin> {
                               Navigator.of(context).pushNamedAndRemoveUntil(
                                   "/signup", (route) => false);
                             },
-                            child: const Text("Regster now"))
+                            child: const Text("Regster "))
                       ],
                     )
                   ],

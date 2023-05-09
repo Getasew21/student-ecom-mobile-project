@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:studecom/screens/PostDetail.dart';
+import 'package:empty_widget/empty_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Profile extends StatefulWidget {
   Profile({Key? key}) : super(key: key);
@@ -39,16 +41,19 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     checkUserStatus();
-    print(postNumber);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         title: const Text("Profile"),
       ),
+
+      //drawer
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
+            // drawer header
             DrawerHeader(
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
@@ -74,16 +79,49 @@ class _ProfileState extends State<Profile> {
                 ],
               ),
             ),
+
+            //drawer list items
+
+            if (isAdmin)
+              ListTile(
+                leading: const Icon(Icons.dashboard),
+                title: const Text('Admin Dashboard'),
+                onTap: () {
+                  Navigator.pushNamed(context, "/admin");
+                },
+              ),
             ListTile(
-              title: const Text('Create post'),
-              onTap: () {},
+              leading: const Icon(Icons.contact_emergency),
+              title: const Text("Contact Us"),
+              onTap: () {
+                final Uri emailLaunchUri = Uri(
+                  scheme: 'mailto',
+                  path: 'getasewadane9@gmail.com',
+                );
+
+                launchUrl(emailLaunchUri);
+              },
             ),
             ListTile(
+              leading: const Icon(Icons.feedback),
+              title: const Text("Feedback"),
+              onTap: () {
+                final Uri emailLaunchUri = Uri(
+                  scheme: 'mailto',
+                  path: 'getasewadane9@gmail.com',
+                );
+
+                launchUrl(emailLaunchUri);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.close),
               title: const Text('Sign out'),
               onTap: () async {
                 await FirebaseAuth.instance.signOut();
+
                 Navigator.pushNamedAndRemoveUntil(
-                    context, "/signup", (route) => false);
+                    context, "/signin", (route) => false);
               },
             ),
           ],
@@ -97,6 +135,7 @@ class _ProfileState extends State<Profile> {
                 .snapshots(),
             builder: (context, snapshot) {
               final postDoc = snapshot.hasData ? snapshot.data!.docs : [];
+              final postNum = snapshot.hasData ? snapshot.data!.docs.length : 0;
               if (!snapshot.hasData) {
                 return const Center(child: CircularProgressIndicator());
               } else {
@@ -105,65 +144,82 @@ class _ProfileState extends State<Profile> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            //circular avator
-                            Column(
+                        Card(
+                          elevation: 10,
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                CircleAvatar(
-                                  backgroundColor:
-                                      Theme.of(context).primaryColor,
-                                  radius: 40,
-                                  child: const Icon(
-                                    Icons.manage_accounts,
-                                    size: 60,
-                                    color: Colors.white,
-                                  ),
+                                //circular avator
+                                Column(
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundColor:
+                                          Theme.of(context).primaryColor,
+                                      radius: 40,
+                                      child: const Icon(
+                                        Icons.manage_accounts,
+                                        size: 60,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    Text(
+                                      user!.email.toString(),
+                                      style: const TextStyle(fontSize: 16),
+                                    )
+                                  ],
                                 ),
-                                Text(
-                                  user!.email.toString(),
-                                  style: const TextStyle(fontSize: 20),
-                                )
-                              ],
-                            ),
 
-                            Column(
-                              children: [
-                                Text(
-                                  '${postNumber}',
-                                  style: const TextStyle(fontSize: 30),
-                                ),
-                                const Text(
-                                  "Total Posts",
-                                  style: TextStyle(fontSize: 20),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      '${postNumber ?? 0}',
+                                      style: const TextStyle(fontSize: 20),
+                                    ),
+                                    const Text(
+                                      "Total Posts",
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ],
                                 ),
                               ],
-                            ),
-                          ],
-                        ),
-                        //user admin card
-                        if (isAdmin)
-                          Card(
-                            color: Color.fromARGB(209, 1, 108, 112),
-                            child: GestureDetector(
-                              child: const ListTile(
-                                title: Text(
-                                  'User Admin',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 25),
-                                ),
-                              ),
-                              onTap: () {
-                                Navigator.pushNamed(context, '/admin');
-                              },
                             ),
                           ),
-                        const SizedBox(
-                          height: 20,
                         ),
-                        const Text("RECENT POSTS"),
+                        //user admin card
+
+                        const SizedBox(
+                          height: 50,
+                        ),
+                        // user post list
+                        Text(
+                          "RECENT POSTS",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Colors.grey[600]),
+                        ),
+                        if (postNum == 0)
+                          Center(
+                              child: EmptyWidget(
+                            image: null,
+                            packageImage: PackageImage.Image_4,
+                            title: 'No Post Yet',
+                            subTitle: 'Please create new Post',
+                            titleTextStyle: const TextStyle(
+                              fontSize: 22,
+                              color: Color(0xff9da9c7),
+                              fontWeight: FontWeight.w500,
+                            ),
+                            subtitleTextStyle: const TextStyle(
+                              fontSize: 14,
+                              color: Color(0xffabb8d6),
+                            ),
+                          )),
+
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.65,
                             child: GridView.count(
@@ -191,7 +247,8 @@ class _ProfileState extends State<Profile> {
                                       return Container(
                                         alignment: Alignment.center,
                                         margin: const EdgeInsets.only(top: 30),
-                                        child: CircularProgressIndicator(),
+                                        child:
+                                            const CircularProgressIndicator(),
                                       );
                                     },
                                   ),
@@ -205,43 +262,4 @@ class _ProfileState extends State<Profile> {
       ),
     );
   }
-
-  void showEditDialog(BuildContext context) => showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) {
-          return Dialog(
-            child: Padding(
-              padding: EdgeInsets.all(10),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    key: const ValueKey("username"),
-                    validator: (value) {
-                      if (value!.isEmpty || value.length < 4) {
-                        return 'please enter a valid password';
-                      }
-                      return null;
-                    },
-                    decoration: const InputDecoration(labelText: "password"),
-                    onSaved: ((newValue) {}),
-                  ),
-                  TextFormField(
-                    key: const ValueKey("password"),
-                    validator: (value) {
-                      if (value!.isEmpty || value.length < 4) {
-                        return 'please enter a valid password';
-                      }
-                      return null;
-                    },
-                    decoration: const InputDecoration(labelText: "password"),
-                    onSaved: ((newValue) {}),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      );
 }
