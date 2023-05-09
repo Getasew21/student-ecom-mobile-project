@@ -35,7 +35,7 @@ class PostDetail extends StatelessWidget {
         )
         .delete();
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        backgroundColor: Colors.red, content: Text("post complated")));
+        backgroundColor: Colors.red, content: Text("post Deleted")));
 
     Navigator.pop(context);
   }

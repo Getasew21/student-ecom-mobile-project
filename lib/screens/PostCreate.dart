@@ -1,11 +1,13 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:bouncy_widget/bouncy_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PostCreate extends StatefulWidget {
   const PostCreate({Key? key}) : super(key: key);
@@ -49,6 +51,86 @@ class _PostCreateState extends State<PostCreate> {
         setState(() {
           uploadTask = ref.putFile(image!);
         });
+
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return Center(
+              child: StreamBuilder(
+                  stream: uploadTask?.snapshotEvents,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final data = snapshot.data!;
+                      double progress = data.bytesTransferred / data.totalBytes;
+                      double percent = progress.round() * 100;
+                      return Container(
+                        height: 100,
+                        width: 200,
+                        color: Color.fromARGB(176, 0, 0, 0),
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            const Text(
+                              "Uploading data...",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            SizedBox(
+                              child: CircularProgressIndicator(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              '${percent} %',
+                              style: const TextStyle(
+                                  color: Color.fromARGB(169, 255, 255, 255),
+                                  fontSize: 16),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      return Center(
+                          child: Container(
+                        height: 100,
+                        width: 200,
+                        color: const Color.fromARGB(146, 0, 0, 0),
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            LinearProgressIndicator(
+                              minHeight: 10,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            const Text(
+                              "Loading File...",
+                              style: TextStyle(
+                                  color: Color.fromARGB(169, 255, 255, 255),
+                                  fontSize: 16),
+                            ),
+                          ],
+                        ),
+                      ));
+                    }
+                  }),
+            );
+          },
+        );
+
         final snapshot = await uploadTask!.whenComplete(() => {});
         final urlLink = await snapshot.ref.getDownloadURL();
 
@@ -69,21 +151,21 @@ class _PostCreateState extends State<PostCreate> {
           "email": _auth.currentUser!.email
         });
 
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .update({"totalpost": FieldValue.increment(1)});
+
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             backgroundColor: Colors.green, content: Text("post complated")));
+        Navigator.of(context).pop();
       }
-
-      setState(() {
-        isPost = true;
-      });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: AlertDialog(
-        actions: [Text("please choose or capture image")],
-      )));
-      setState(() {
-        isPost = true;
-      });
+          backgroundColor: Colors.red,
+          content: Center(
+            child: Text("Please choose photo"),
+          )));
       return;
     }
   }
@@ -95,14 +177,16 @@ class _PostCreateState extends State<PostCreate> {
         .where("email", isEqualTo: FirebaseAuth.instance.currentUser!.email)
         .get();
     var postNum = await FirebaseFirestore.instance
-        .collection("posts")
+        .collection("users")
         .where("email", isEqualTo: FirebaseAuth.instance.currentUser!.email)
         .get();
 
-    setState(() {
-      isPermit = permission.docs.isNotEmpty;
-      postNumber = postNum.docs.length;
-    });
+    if (mounted) {
+      setState(() {
+        isPermit = permission.docs.isNotEmpty;
+        postNumber = postNum.docs.first["totalpost"];
+      });
+    }
   }
 
   void getImageCamera() async {
@@ -128,7 +212,7 @@ class _PostCreateState extends State<PostCreate> {
   @override
   Widget build(BuildContext context) {
     checkUserStatus();
-    print(isPermit);
+    print(postNumber);
     return Scaffold(
         body: Center(
             child: Container(
@@ -137,7 +221,7 @@ class _PostCreateState extends State<PostCreate> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            postNumber <= 1 || isPermit
+            postNumber > 1 || true
                 ? Padding(
                     padding: const EdgeInsets.all(16),
                     child: Form(
@@ -203,7 +287,7 @@ class _PostCreateState extends State<PostCreate> {
                                     child: const Icon(Icons.photo)),
                               ],
                             ),
-                            if (!isPost) buildProgess(),
+
                             const SizedBox(
                               height: 20,
                             ),
@@ -387,7 +471,163 @@ class _PostCreateState extends State<PostCreate> {
                           ],
                         )),
                   )
-                : Text("get permision ")
+                : Column(
+                    children: [
+                      Bouncy(
+                          ratio: 0.5,
+                          lift: 30,
+                          child: const Icon(
+                            Icons.question_mark_outlined,
+                            size: 50,
+                          )),
+                      const Text("You Have Already Created One Post "),
+                      const Text("To access this page you must Buy Package"),
+                      const Text("Get package for 100 BIRR"),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      const Text("Please Contact Us "),
+                      const SizedBox(
+                        height: 10,
+                      ),
+
+                      //contact us
+                      Column(
+                        children: [
+                          //contact us with email
+                          InkWell(
+                            onTap: () {
+                              final Uri emailLaunchUri = Uri(
+                                scheme: 'mailto',
+                                path: 'getasewadane9@gmail.com',
+                              );
+
+                              launchUrl(emailLaunchUri);
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(22),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 25),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                    width: 2,
+                                    color: const Color.fromARGB(255, 3, 88, 74),
+                                  ),
+                                  borderRadius: BorderRadius.circular(8)),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: const [
+                                  Icon(Icons.email),
+                                  Center(
+                                    child: Text(
+                                      "With Email",
+                                      style: TextStyle(
+                                          color: Color.fromARGB(255, 3, 88, 74),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 30,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          // with phone number
+                          InkWell(
+                            onTap: () async {
+                              final Uri launchUri = Uri(
+                                scheme: 'tel',
+                                path: "+251945557122",
+                              );
+                              await launchUrl(launchUri);
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(22),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 25),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                    width: 2,
+                                    color: const Color.fromARGB(255, 3, 88, 74),
+                                  ),
+                                  borderRadius: BorderRadius.circular(8)),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: const [
+                                  Icon(Icons.phone),
+                                  Center(
+                                    child: Text(
+                                      "With Phone",
+                                      style: TextStyle(
+                                          color: Color.fromARGB(255, 3, 88, 74),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 30,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          // with phone telegrame
+                          InkWell(
+                            onTap: () async {
+                              await launch(
+                                "https://t.me/Gechoadane",
+                                forceSafariVC: false,
+                                forceWebView: false,
+                                headers: <String, String>{
+                                  'my_header_key': 'my_header_value'
+                                },
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(22),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 25),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                    width: 2,
+                                    color: const Color.fromARGB(255, 3, 88, 74),
+                                  ),
+                                  borderRadius: BorderRadius.circular(8)),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: const [
+                                  Icon(Icons.telegram),
+                                  Center(
+                                    child: Text(
+                                      "With Phone",
+                                      style: TextStyle(
+                                          color: Color.fromARGB(255, 3, 88, 74),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 30,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )
           ],
         ),
       ),

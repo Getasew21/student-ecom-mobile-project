@@ -15,11 +15,23 @@ class _AdminDashboardState extends State<AdminDashboard> {
   changePermision(String userId, bool isPermit) async {
     //loading circle
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(
-            color: Color.fromARGB(255, 24, 135, 102),
+        return Center(
+          child: Container(
+            decoration: const BoxDecoration(
+                color: Color.fromARGB(66, 19, 19, 18),
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            child: Container(
+              height: 60,
+              width: 60,
+              child: const CircularProgressIndicator(
+                semanticsLabel: "Loadding",
+                strokeWidth: 7,
+                color: Color.fromARGB(255, 24, 135, 102),
+              ),
+            ),
           ),
         );
       },

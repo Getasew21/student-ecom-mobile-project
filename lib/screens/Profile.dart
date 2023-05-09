@@ -14,24 +14,32 @@ class _ProfileState extends State<Profile> {
   var user = FirebaseAuth.instance.currentUser;
   var userEmail = FirebaseAuth.instance.currentUser?.email.toString();
   final postRef = FirebaseFirestore.instance.collection("posts");
-
   var isAdmin = false;
+  int? postNumber;
 
   void checkUserStatus() async {
-    final checkadmin = await FirebaseFirestore.instance
+    var permission = await FirebaseFirestore.instance
         .collection("users")
         .where("isadmin", isEqualTo: true)
         .where("email", isEqualTo: FirebaseAuth.instance.currentUser!.email)
         .get();
+    var postNum = await FirebaseFirestore.instance
+        .collection("users")
+        .where("email", isEqualTo: FirebaseAuth.instance.currentUser!.email)
+        .get();
 
-    setState(() {
-      isAdmin = checkadmin.docs.isNotEmpty;
-    });
+    if (mounted) {
+      setState(() {
+        isAdmin = permission.docs.isNotEmpty;
+        postNumber = postNum.docs.first["totalpost"];
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     checkUserStatus();
+    print(postNumber);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
@@ -67,12 +75,16 @@ class _ProfileState extends State<Profile> {
               ),
             ),
             ListTile(
-              title: const Text(''),
+              title: const Text('Create post'),
               onTap: () {},
             ),
             ListTile(
               title: const Text('Sign out'),
-              onTap: () {},
+              onTap: () async {
+                await FirebaseAuth.instance.signOut();
+                Navigator.pushNamedAndRemoveUntil(
+                    context, "/signup", (route) => false);
+              },
             ),
           ],
         ),
@@ -86,7 +98,7 @@ class _ProfileState extends State<Profile> {
             builder: (context, snapshot) {
               final postDoc = snapshot.hasData ? snapshot.data!.docs : [];
               if (!snapshot.hasData) {
-                return const CircularProgressIndicator();
+                return const Center(child: CircularProgressIndicator());
               } else {
                 return Container(
                     margin: const EdgeInsets.all(10),
@@ -120,11 +132,11 @@ class _ProfileState extends State<Profile> {
                             Column(
                               children: [
                                 Text(
-                                  '${postDoc.length}',
+                                  '${postNumber}',
                                   style: const TextStyle(fontSize: 30),
                                 ),
                                 const Text(
-                                  "Posts",
+                                  "Total Posts",
                                   style: TextStyle(fontSize: 20),
                                 ),
                               ],
@@ -151,7 +163,7 @@ class _ProfileState extends State<Profile> {
                         const SizedBox(
                           height: 20,
                         ),
-                        const Text("YOUR POSTS"),
+                        const Text("RECENT POSTS"),
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.65,
                             child: GridView.count(

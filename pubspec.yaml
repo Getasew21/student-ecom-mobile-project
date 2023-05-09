@@ -48,6 +48,9 @@ dependencies:
   path_provider: ^2.0.14
   url_launcher: ^6.1.10
   easy_image_viewer: ^1.2.0
+  bouncy_widget: ^2.0.1
+  google_nav_bar: ^5.0.6
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -65,7 +68,7 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - assets/
+    - lib/images/
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

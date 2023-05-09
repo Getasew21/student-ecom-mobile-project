@@ -1,8 +1,5 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:studecom/screens/PostDetail.dart';
-import 'package:studecom/screens/Profile.dart';
 
 class Post extends StatelessWidget {
   Post(this.imageUrl, this.title, this.price, this.email, this.postdocid,
@@ -59,7 +56,7 @@ class Post extends StatelessWidget {
                   ),
                   Container(height: 10),
                   Text(
-                    "\$$price",
+                    "\$ $price",
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.grey[700],
@@ -68,17 +65,6 @@ class Post extends StatelessWidget {
                   Row(
                     children: <Widget>[
                       const Spacer(),
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          foregroundColor: Colors.transparent,
-                        ),
-                        child: Text(
-                          "SHARE",
-                          style:
-                              TextStyle(color: Theme.of(context).primaryColor),
-                        ),
-                        onPressed: () {},
-                      ),
                       TextButton(
                         style: TextButton.styleFrom(
                           foregroundColor: Colors.transparent,
